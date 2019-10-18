@@ -13,8 +13,10 @@ import Contoller.Controller_interface;
 
 public class Interface extends JPanel {
 	public JTextField txt[];
-	public JPanel panel_paridad,panel_destino;
-	public JLabel mensajeFinal; 
+	public JPanel panel_paridad;
+	public JTextField destino;
+	public JLabel mensajeFinal;
+	
 	public int x=210;
 	public int y=60;
 	public int largo=900;
@@ -41,7 +43,6 @@ public class Interface extends JPanel {
 			txt[c] = new JTextField();
 			txt[c].setBounds(x, (c+1)*y-5, largo, ancho);
 			txt[c].setFont(new Font("Cambria", Font.PLAIN, 14));
-			txt[c].setColumns(10);
 			txt[c].setBackground(Color.WHITE);
 			txt[c].setBorder(new LineBorder(Color.gray));
 			add(txt[c]);
@@ -56,13 +57,15 @@ public class Interface extends JPanel {
 		panel_paridad.setBounds(x, 4*y-5, largo, ancho);
 		panel_paridad.setLayout(null);
 		add(panel_paridad);
+	
 		
-		panel_destino = new JPanel();
-		panel_destino.setBorder(new LineBorder(Color.gray));
-		panel_destino.setBackground(Color.WHITE);
-		panel_destino.setBounds(x, 5*y-5, largo, ancho);
-		panel_destino.setLayout(null);
-		add(panel_destino);
+		destino = new JTextField();
+		destino.setBorder(new LineBorder(Color.gray));
+		destino.setBackground(Color.WHITE);
+		destino.setBounds(x, 5*y-5, largo, ancho);
+		destino.setFont(new Font("Cambria", Font.PLAIN, 14));
+		destino.setEditable(false);
+		add(destino);
 		
 		mensajeFinal = new JLabel();
 		mensajeFinal.setBorder(new LineBorder(Color.gray));

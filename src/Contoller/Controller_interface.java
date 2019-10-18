@@ -1,85 +1,149 @@
 package Contoller;
-
+	
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Arrays;
-
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
-
 import View.Interface;
 
 public class Controller_interface implements KeyListener {
 	private Interface in;
-	private String cadenaBinari="";
-	private String [] destino;
-	private String [] cadenaBinaria;
-	private String [] strBinary;
 	private JTextField txt1[];
 	private JTextField txt2[];
-	private int un[];
 	private int size=0;
-	String paridadd[];
-	private boolean [] enviado, recibido;
+	int count [];
 	public Controller_interface(Interface in) {
 		this.in= in;
+		prueba();
 	}
 	
 	@Override
 	public void keyReleased(KeyEvent e) {
-		
+		String m = "Mensaje recibido correctamente";
+		String m1 = "Mensaje no recibido correctamente";
+		String message="";
 		if(e.getSource() == in.txt[0]) {
-			String m = in.txt[0].getText();
-			size = m.length();
-			String mensaje =cadenaABinario(in.txt[0].getText());
-			addCeldas(size);
-			destino = new String [txt1.length];
-			for (int c = 0; c < cadenaBinaria.length; c++)
-				 destino [c]= removeBit(txt1[c].getText());
+			message = in.txt[0].getText();
 			
-			addCeldasB(size, destino);
-			in.txt[1].setText(cadenaBinari);
-			in.txt[2].setText(Arrays.toString(un));
-			in.mensajeFinal.setText("Mensaje recibido correctamente");
-		}	
-		
-		for (int i = 0; i < cadenaBinaria.length; i++) {
+			String binary [] =letters_to_binary(message);
+			int    decimal []=binary_to_decimal(binary);
+			count =count(decimal);
+			String addp[] = addParity(count, binary);
 			
+			in.txt[1].setText(array_to_cadena(binary));
+			in.txt[2].setText(Arrays.toString(count));
+			addCeldas(addp);
+			
+			String extract_txt [] = extract(txt1);
+			String destino [] = delete_Parity(extract_txt);
+			int    decimal2 []=binary_to_decimal(destino);
+			int    count2 []=count(decimal2);
+			
+			in.destino.setText(array_to_cadena(destino));
+			
+			if(validation(count,count2))
+				in.mensajeFinal.setText(m+ ": " + message);
 		}
-		
-			for (int c = 0; c < size; c++) {
-				if(e.getSource() == txt1[c]) {
-					for (int d = 0; d < cadenaBinaria.length; d++)
-						destino [d]= removeBit(txt1[d].getText()); 
-						addCeldasB(size, destino);
-						
-						if(verificar(strBinary,destino)) {
-							in.mensajeFinal.setText("Mensaje no recibido correctamente");
-						}
-						else {
-							in.mensajeFinal.setText("Mensaje recibido correctamente");
-						}
+			for (int c = 0; c < txt1.length; c++) {
+				if(e.getSource()==txt1[c]) {
+					String extract_tx [] = extract(txt1);
+					String destin [] = delete_Parity(extract_tx);
+					int    decimal22 []=binary_to_decimal(destin);
+					int    count22 []=count(decimal22);
+					if(validation(count,count22))
+						in.mensajeFinal.setText(m+ " : " + message);
+					else in.mensajeFinal.setText(m1);
 				}
-			
-		}
-	}
-
-	public String removeBit(String binary) {
-		String nw_binary = binary.substring(0, binary.length()-1);
-		return nw_binary;
+			}
 	}
 	
-	public void addCeldas(int length) {
+	public boolean validation(int [] count, int [] count2) {
+		boolean flag = Arrays.equals(count, count2);
+		return flag;
+	}
+	
+	public String array_to_cadena(String [] a) {
+		String text = "";
+		for (int c = 0; c < a.length; c++)
+			text +="   "+a[c];
+		return text;
+	}
+	
+	public String [] extract(JTextField [] textf) {
+		String text_cad []= new String [textf.length];
+		for (int c = 0; c < text_cad.length; c++)
+			text_cad [c] = textf[c].getText();
+		return text_cad;
+	}
+	
+	
+	public void prueba() {
+		String a [] =letters_to_binary("hello");
+		int [] b=binary_to_decimal(a);
+		int [] c=count(b);
+		String with_parity []= addParity(c,a);
+		delete_Parity(with_parity);
+	}
+	
+	public String [] letters_to_binary(String word) {
+		size = word.length();
+		char[] lettres= word.toCharArray();
+		String [] binary = new String [size];
+		for (byte c = 0; c < size; c++) {
+			byte number_ascii = (byte) lettres[c];
+			binary[c] = Integer.toBinaryString(number_ascii);	
+		}
+	return binary;
+	}
+	
+	public int[] count(int [] binary) {
+		int parity[]= new int[binary.length];
+		for (int c = 0; c < parity.length; c++) { 
+			parity[c] =Integer.bitCount(binary[c]);
+		}
+	return parity;
+	}
+	
+	
+	public int [] binary_to_decimal(String [] binary) {
+		Long aux_numberDecimal[] = new Long[binary.length];
+		int numberDecimal [] = new int[binary.length];
+		for (int c = 0; c < binary.length; c++) {
+			aux_numberDecimal[c]= Long.parseLong(binary[c],2);
+			numberDecimal[c]= aux_numberDecimal[c].intValue();
+		}
+	return numberDecimal;
+	}
+	
+	
+	public String [] addParity(int [] count, String [] binary) {
+		String [] binary_with_parity = new String[binary.length];
+		for (int c = 0; c < count.length; c++) {
+			if(count[c]%2==0)	binary_with_parity[c] = binary[c] + "0";
+			else 				binary_with_parity[c] = binary[c] + "1";
+		}		
+	return binary_with_parity;
+	}	
+	
+	
+	public String [] delete_Parity(String [] binary) {
+		String binary_without_parity [] = new String[binary.length]; 
+		for (int c = 0; c < binary.length; c++)
+			binary_without_parity[c] = binary[c].substring(0, binary[c].length()-1);
+	return binary_without_parity;
+	}
+	
+
+	public void addCeldas(String [] data) {
+		int length = data.length;
 		txt1 = new JTextField[length];
-		paridadd = new String [txt1.length];
 		in.panel_paridad.removeAll();
 		in.panel_paridad.repaint();
 		for (int c = 0; c < length; c++) {
-			txt1[c] = new JTextField(cadenaBinaria[c]);
-			paridadd[c] = cadenaBinaria[c].substring(0, cadenaBinaria[c].length()-1);
+			txt1[c] = new JTextField(data[c]);
 			txt1[c].setFont(new Font("Cambria", Font.PLAIN, 14));
 			txt1[c].setBounds(c*75+3, 1, 70, 28);
 			txt1[c].setBorder(new LineBorder(Color.WHITE));
@@ -87,94 +151,15 @@ public class Controller_interface implements KeyListener {
 			in.panel_paridad.add(txt1[c]);
 		}
 		in.panel_paridad.repaint();
-	}
-	
-	public void addCeldasB(int length,String [] destino) {
-		txt2 = new JTextField[length];
-		in.panel_destino.removeAll();
-		in.panel_destino.repaint();
-		for (int c = 0; c < length; c++) {
-			txt2[c] = new JTextField(destino[c]);
-			txt2[c].setFont(new Font("Cambria", Font.PLAIN, 14));
-			txt2[c].setBounds(c*75+3, 1, 70, 28);
-			txt2[c].setBorder(new LineBorder(Color.WHITE));
-			txt2[c].setEditable(false);
-			in.panel_destino.add(txt2[c]);
-		}
-		in.panel_destino.repaint();
-	}
-	
-	
-		
-	public String cadenaABinario(String parCadena){
-	    int longitud = parCadena.length();
-	    cadenaBinaria=new String [longitud];
-	    recibido = new boolean [longitud];
-	    strBinary=new String [longitud];
-	    String resultado="";
-	    cadenaBinari ="";
-	    un= new int [longitud];
-	    // System.out.println("longitud="+longitud+" longitud cadeBinaria"+cadenaBinaria.length +" longitud un"+ un.length);
-	    for(int i=0;i<longitud;i++){
-	       cadenaBinaria[i]= String.format("%8s", Integer.toBinaryString(parCadena.charAt(i)));
-	       cadenaBinari+= String.format("%8s", Integer.toBinaryString(parCadena.charAt(i)));
-	       strBinary[i]= String.format("%8s", Integer.toBinaryString(parCadena.charAt(i)));
-	       un[i]=Integer.bitCount(parCadena.charAt(i));
-	       if(un[i]%2==0) {
-	    	   cadenaBinaria[i]+="0";
-	    	   recibido[i]= true;
-	       }
-	       else {
-	    	   cadenaBinaria[i]+="1";
-	    	   recibido[i]= false;
-	       }
-	       resultado+=cadenaBinaria[i];
-	    } 
-	 //  System.out.println(Arrays.toString(strBinary));
-	    // System.out.println("cadena: "+parCadena+"\n"+"convertido a binario: "+cadenaBinari+"\n"+"cantidad de 1 recibidos: "+Arrays.toString(un));
-	    //System.out.println("Bit de paridad agregado: "+Arrays.toString(cadenaBinaria));
-	    return resultado;
-     }	
-	
-	
-	public boolean verificar(String [] a, String[] b) {
-		enviado = new boolean[a.length];
-		System.out.println(Arrays.toString(a));
-		boolean flag= false;
-		boolean bandera = true;
-		for (int i = 0; i < b.length; i++) {
-			int size = a[i].length();
-			for (int j = 0; j < size; j++) {
-				if(b.length<a.length) {
-					char aa= a[i].charAt(j);
-					char bb = b[i].charAt(j);
-					System.out.println(aa+"::" + bb);
-					if(aa==bb)
-					flag=true;
-				}
-			}
-		}
-		int count=0;
-		for (int i = 0; i < enviado.length; i++) {
-			if(enviado[i]==true) {
-				count++;
-			}
-		}
-		
-		if(count==a.length) {
-			bandera=false;
-		}
-		
-		return bandera;
 		
 	}
-		@Override
-		public void keyPressed(KeyEvent e) {
-		}
-		@Override
-		public void keyTyped(KeyEvent e) {
-		}
-	
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+	}
+	@Override
+	public void keyTyped(KeyEvent e) {
+	}
 }
 
 	

@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Arrays;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import View.Interface;
 
@@ -14,17 +15,17 @@ public class Controller_interface implements KeyListener {
 	private JTextField txt1[];
 	private JTextField txt2[];
 	private int size=0;
-	int count [];
+	public int count [];
+	public String message="";
+	int    decimal22 [];
 	public Controller_interface(Interface in) {
 		this.in= in;
-		prueba();
+		//prueba();
 	}
 	
 	@Override
 	public void keyReleased(KeyEvent e) {
-		String m = "Mensaje recibido correctamente";
-		String m1 = "Mensaje no recibido correctamente";
-		String message="";
+		
 		if(e.getSource() == in.txt[0]) {
 			message = in.txt[0].getText();
 			
@@ -44,20 +45,40 @@ public class Controller_interface implements KeyListener {
 			
 			in.destino.setText(array_to_cadena(destino));
 			
-			if(validation(count,count2))
-				in.mensajeFinal.setText(m+ ": " + message);
+			if(validation(count,count2)) {
+				in.mensajeFinal.setForeground(Color.BLACK);
+				in.mensajeFinal.setText("Mensaje recibido correctamente : " + message);
+			}
 		}
 			for (int c = 0; c < txt1.length; c++) {
 				if(e.getSource()==txt1[c]) {
 					String extract_tx [] = extract(txt1);
 					String destin [] = delete_Parity(extract_tx);
-					int    decimal22 []=binary_to_decimal(destin);
+					decimal22 =binary_to_decimal(destin);
 					int    count22 []=count(decimal22);
-					if(validation(count,count22))
-						in.mensajeFinal.setText(m+ " : " + message);
-					else in.mensajeFinal.setText(m1);
+					show_Message(count22);
+				
 				}
 			}
+	}
+	
+	
+	public void show_Message(int [] count_r) {
+		if(validation(count,count_r)) {
+			in.mensajeFinal.setForeground(Color.BLACK);
+			in.mensajeFinal.setText("Mensaje recibido correctamente : " + convert_to_String(decimal22));
+		}
+		else {
+			in.mensajeFinal.setForeground(Color.RED);
+			in.mensajeFinal.setText("Error al recibir mensaje : "+ convert_to_String(decimal22));	
+		}
+	}
+	public String convert_to_String(int [] numbers) {
+		String word= "";
+		for (int c = 0; c < numbers.length; c++) {
+			word = word+Character.toString((char) numbers[c]);
+		} 
+		return word;
 	}
 	
 	public boolean validation(int [] count, int [] count2) {
@@ -86,6 +107,7 @@ public class Controller_interface implements KeyListener {
 		int [] c=count(b);
 		String with_parity []= addParity(c,a);
 		delete_Parity(with_parity);
+		System.out.println("converso: "+ convert_to_String(b));
 	}
 	
 	public String [] letters_to_binary(String word) {
@@ -101,9 +123,8 @@ public class Controller_interface implements KeyListener {
 	
 	public int[] count(int [] binary) {
 		int parity[]= new int[binary.length];
-		for (int c = 0; c < parity.length; c++) { 
+		for (int c = 0; c < parity.length; c++) 
 			parity[c] =Integer.bitCount(binary[c]);
-		}
 	return parity;
 	}
 	
@@ -145,13 +166,13 @@ public class Controller_interface implements KeyListener {
 		for (int c = 0; c < length; c++) {
 			txt1[c] = new JTextField(data[c]);
 			txt1[c].setFont(new Font("Cambria", Font.PLAIN, 14));
-			txt1[c].setBounds(c*75+3, 1, 70, 28);
+			txt1[c].setBounds(c*75+3, 1, 80, 28);
+			txt1[c].setHorizontalAlignment(SwingConstants.CENTER);
 			txt1[c].setBorder(new LineBorder(Color.WHITE));
 			txt1[c].addKeyListener(this);
 			in.panel_paridad.add(txt1[c]);
 		}
-		in.panel_paridad.repaint();
-		
+		in.panel_paridad.repaint();	
 	}
 
 	@Override

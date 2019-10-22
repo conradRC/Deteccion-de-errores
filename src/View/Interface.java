@@ -17,9 +17,9 @@ public class Interface extends JPanel {
 	public JTextField destino;
 	public JLabel mensajeFinal;
 	
-	public int x=210;
+	public int x=180;
 	public int y=60;
-	public int largo=900;
+	public int largo=1100;
 	public int ancho=30;
 	public Interface() {
 		setBackground(Color.WHITE);
@@ -33,7 +33,7 @@ public class Interface extends JPanel {
 		for (int c = 0; c < etiquetas.length; c++) {
 			lb[c] = new JLabel(etiquetas[c]);
 			lb[c].setHorizontalAlignment(SwingConstants.RIGHT);
-			lb[c].setBounds(50, (c+1)*y, 150, 15);
+			lb[c].setBounds(20, (c+1)*y, 150, 15);
 			lb[c].setFont(new Font("Sitka Text", Font.PLAIN, 14));
 			lb[c].setBackground(Color.WHITE);
 			add(lb[c]);
@@ -71,6 +71,7 @@ public class Interface extends JPanel {
 		mensajeFinal.setBorder(new LineBorder(Color.gray));
 		mensajeFinal.setBackground(Color.WHITE);
 		mensajeFinal.setBounds(x, 6*y-5, largo, ancho);
+		mensajeFinal.setFont(new Font("Cambria", Font.PLAIN, 15));
 		add(mensajeFinal);
 	}
 	
@@ -84,7 +85,7 @@ public class Interface extends JPanel {
 		Interface interf= new Interface();
 		Controller_interface control= new Controller_interface(interf);
 		interf.conect_controller(control);
-		ventana.setSize(1200,500);
+		ventana.setSize(1350,500);
 		ventana.setDefaultCloseOperation(3);
 		ventana.setLocationRelativeTo(null);
 		ventana.getContentPane().add(interf);

@@ -10,71 +10,67 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import Contoller.Controller_interface;
+import javax.swing.JScrollPane;
 
 public class Interface extends JPanel {
 	public JTextField txt[];
-	public JPanel panel_paridad;
-	public JTextField destino;
-	public JLabel mensajeFinal;
-	
+	public JTextField eti[];
 	public int x=180;
-	public int y=60;
-	public int largo=1100;
-	public int ancho=30;
+	public int y=80;
+	public int largo=700;
+	public int ancho=45;
 	public Interface() {
 		setBackground(Color.WHITE);
 		setLayout(null);
 		
-		String [] etiquetas = {"Mensaje :","Mensaje en binario :","Cantidad de unos :", "Paridad :", "Destino :","Mensaje recibido: "};
-		
+		String [] etiquetas = {"Mensaje :","Mensaje en binario :", "Paridad :", "Destino :","Mensaje recibido: "};
+		JScrollPane js[]= new JScrollPane[etiquetas.length];
+		JScrollPane js1[]= new JScrollPane[etiquetas.length-2];
 		JLabel lb [] = new JLabel[etiquetas.length]; 
-		txt = new JTextField[etiquetas.length-1];
+		eti = new JTextField[etiquetas.length-2];
+		txt = new JTextField[etiquetas.length];
 		
 		for (int c = 0; c < etiquetas.length; c++) {
 			lb[c] = new JLabel(etiquetas[c]);
 			lb[c].setHorizontalAlignment(SwingConstants.RIGHT);
 			lb[c].setBounds(20, (c+1)*y, 150, 15);
-			lb[c].setFont(new Font("Sitka Text", Font.PLAIN, 14));
+			lb[c].setFont(new Font("Sitka Text", Font.PLAIN, 15));
 			lb[c].setBackground(Color.WHITE);
 			add(lb[c]);
 		}
 		
-		for (int c = 0; c < txt.length-2; c++) {
+		for (int c = 0; c < lb.length; c++)
+			js [c]= new JScrollPane();
+		
+		for (int c = 0; c < lb.length-2; c++)
+			js1 [c]= new JScrollPane();
+		
+		for (int c = 0; c < etiquetas.length; c++) {
 			txt[c] = new JTextField();
-			txt[c].setBounds(x, (c+1)*y-5, largo, ancho);
-			txt[c].setFont(new Font("Cambria", Font.PLAIN, 14));
-			txt[c].setBackground(Color.WHITE);
 			txt[c].setBorder(new LineBorder(Color.gray));
+			txt[c].setBackground(Color.WHITE);
+			txt[c].setBounds(x, (c+1)*y-15, largo, ancho);
+			js[c].setBounds(x, (c+1)*y-15, largo, ancho);
+			txt[c].setFont(new Font("Cambria", Font.BOLD, 14));
 			add(txt[c]);
+			add(js[c]);
+			js[c].setViewportView(txt[c]);
+			js[c].setBorder(new LineBorder(new Color(130, 135, 144), 0));
 		}
 		
-		txt[1].setEditable(false);
-		txt[2].setEditable(false);
-		
-		panel_paridad = new JPanel();
-		panel_paridad.setBorder(new LineBorder(Color.gray));
-		panel_paridad.setBackground(Color.WHITE);
-		panel_paridad.setBounds(x, 4*y-5, largo, ancho);
-		panel_paridad.setLayout(null);
-		add(panel_paridad);
-	
-		
-		destino = new JTextField();
-		destino.setBorder(new LineBorder(Color.gray));
-		destino.setBackground(Color.WHITE);
-		destino.setBounds(x, 5*y-5, largo, ancho);
-		destino.setFont(new Font("Cambria", Font.PLAIN, 14));
-		destino.setEditable(false);
-		add(destino);
-		
-		mensajeFinal = new JLabel();
-		mensajeFinal.setBorder(new LineBorder(Color.gray));
-		mensajeFinal.setBackground(Color.WHITE);
-		mensajeFinal.setBounds(x, 6*y-5, largo, ancho);
-		mensajeFinal.setFont(new Font("Cambria", Font.PLAIN, 15));
-		add(mensajeFinal);
+		for (int c = 0; c < etiquetas.length-2; c++) {
+			eti[c] = new JTextField();
+			eti[c].setBorder(new LineBorder(Color.gray));
+			eti[c].setBackground(Color.WHITE);
+			eti[c].setBounds(x+largo+10, +(c+2)*y-15, 150, ancho);
+			js1[c].setBounds(x+largo+10, +(c+2)*y-15, 150, ancho);
+			eti[c].setFont(new Font("Cambria", Font.BOLD, 14));
+			add(eti[c]);
+			add(js1[c]);
+			js1[c].setViewportView(eti[c]);
+			js1[c].setBorder(new LineBorder(new Color(130, 135, 144), 0));
+		}
 	}
-	
 	public void conect_controller(Controller_interface control) {
 		for (int c = 0; c < txt.length-2; c++)
 			txt[c].addKeyListener(control);
@@ -85,7 +81,7 @@ public class Interface extends JPanel {
 		Interface interf= new Interface();
 		Controller_interface control= new Controller_interface(interf);
 		interf.conect_controller(control);
-		ventana.setSize(1350,500);
+		ventana.setSize(1100,550);
 		ventana.setDefaultCloseOperation(3);
 		ventana.setLocationRelativeTo(null);
 		ventana.getContentPane().add(interf);

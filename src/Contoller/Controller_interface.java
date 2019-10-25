@@ -1,78 +1,161 @@
 package Contoller;
-	
-import java.awt.Color;
-import java.awt.Font;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Arrays;
+
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.border.LineBorder;
 import View.Interface;
 
 public class Controller_interface implements KeyListener {
 	private Interface in;
-	private JTextField txt1[];
-	private JTextField txt2[];
 	private int size=0;
-	public int count [];
-	public String message="";
-	int    decimal22 [];
+	private int count [];
+	private String message="";
+	private int    decimal22 [];
+	private int    parOne [];
+	private int    parTwo [];
+	private String separate[];
+	
+
 	public Controller_interface(Interface in) {
 		this.in= in;
-		//prueba();
 	}
+	
+	public boolean validationMessage(int [] parOne,int [] parTwo) {
+		boolean isValido = false;
+		System.out.println(Arrays.toString(parOne) +" : "+ Arrays.toString(parTwo));
+		for (int i = 0; i < parOne.length; i++) {
+			if(parOne[i]==parTwo[i]){
+				isValido=true;
+			}
+			else{
+				isValido=false;
+				break;
+			}
+		}
+		return isValido;
+	}
+	
 	
 	@Override
 	public void keyReleased(KeyEvent e) {
 		
 		if(e.getSource() == in.txt[0]) {
-			message = in.txt[0].getText();
+			message = in.txt[0].getText();				  //OBTENEMOS EL MENSAJE INGRESADO
 			
-			String binary [] =letters_to_binary(message);
-			int    decimal []=binary_to_decimal(binary);
-			count =count(decimal);
-			String addp[] = addParity(count, binary);
+			String binary [] =letters_to_binary(message); //CONVERTIMOS EL MENSAJE A BINARIO	
+			int    decimal []=binary_to_decimal(binary);  //CONVERTIMOS EL BINARIO A DECIMAL   
+			count =count(decimal);						  //CON EL DECIMAL CONTAMOS LOS UNOS (1)	
 			
-			in.txt[1].setText(array_to_cadena(binary));
-			in.txt[2].setText(Arrays.toString(count));
-			addCeldas(addp);
+			in.txt[1].setText(array_to_cadena(binary));	  //AGREGAMOS EL MENSAJE EN BINARIO A LA CASILLA DE "MENSAJE EN BINARIO"
+			in.eti[0].setText(deleteCorchet(Arrays.toString(count))); //AGREGAMOS EL CONTEO DE LA LINEA 48 EN EL PRIMER CAMPO COLUMNA 3 FILA 1
 			
-			String extract_txt [] = extract(txt1);
-			String destino [] = delete_Parity(extract_txt);
-			int    decimal2 []=binary_to_decimal(destino);
-			int    count2 []=count(decimal2);
+			int [] c= isPar(count);						  //VERIFIAMOS CON BASE AL CONTEO, CUALES SON PARES
+			parOne= c;
 			
-			in.destino.setText(array_to_cadena(destino));
+			String addp[] = addParity(c, binary);		  //AGREGAMOS EL BIT DE PARIDAD A CADA SEGEMENTO DE BITS
+			in.txt[2].setText(deleteCorchet(Arrays.toString(addp)));//AGREGAMOS LOS BITS CON EL BIT DE PARIDAD PERO LE QUITAMOS LOS CORCHETES
 			
-			if(validation(count,count2)) {
-				in.mensajeFinal.setForeground(Color.BLACK);
-				in.mensajeFinal.setText("Mensaje recibido correctamente : " + message);
+			int [] asd= countStringInBinary(addp);			//CONTAMOS CANTIDAD DE UNOS (SOLO QUE ES OTRO MÉTODO POR QUE ES UNA CADENA)	
+			in.eti[1].setText(deleteCorchet(Arrays.toString(asd)));//BORRAMOS CORCHETES DE LO ANTEORIOR Y AGREGAMOS AL CAMPO COLUMNA 3 FILA 2
+			
+			
+			in.txt[3].setText(array_to_cadena(binary));		//COMO NO VA CAMBIAR EN ESTA PARTE, AGREGAMOS EL MENSAJE DE DESTINO DIRECTAMENTE EN EL CAMPO "DESTINO"
+			
+			in.txt[4].setText("Mensaje recibido con éxito : " + message); //AGREGAMOS EL MENSAJE EN EL CAMPO "MENSAJE"
+		}
+		//EN ESTA PARTE VERFICAMOS SI SE MODIFICA EL CAMPO DE PARIDAD
+		if(e.getSource()==in.txt[2]){		//ESCUCHA SI SE MODIFICA EL CAMPO DE "PARIDAD" (ENTRA CADA VEZ QUE SE MODIFICA EL CAMPO)
+			String cadena = in.txt[2].getText();	//OBTIENE LA CADENA DEL CAMPO (YA QUE SE MODIFICÓ ALGO)
+			String destino =deleteCorchet(cadena);//SE BORRAN LOS CORCHETES
+			System.out.println();
+			//in.txt[3].setText(cadena);	//SE ACTUALIZAN LOS DATOS DE DESTINO CON RESPECTO AL CAMPO DE PARIDAD
+			
+			String [] delete_Parity = delete_Parity(cadena);
+			in.txt[3].setText(deleteCorchet(Arrays.toString(delete_Parity)));
+			
+			String a = in.txt[3].getText();
+			String b = deleteCorchet(cadena);
+			String []c = b.split(",");
+			int counstr []= countStringInBinary(c);
+			parTwo = isPar(counstr);
+			//int    decim []=binary_to_decimal(c);  //CONVERTIMOS EL BINARIO A DECIMAL
+			//CONTAR NUEVOS BITS DE UNOS
+			
+			String [] convertToArray = cadena.split(", ");
+			int    decimal []=binary_to_decimal(convertToArray);  //CONVERTIMOS EL BINARIO A DECIMAL
+			int []countNewMenssage =count(decimal);						  //CON EL DECIMAL CONTAMOS LOS UNOS (1)
+			in.eti[2].setText(deleteCorchet(Arrays.toString(countNewMenssage)));
+		
+			
+			
+			
+			/*String []ssd= in.txt[3].getText().split(", ");
+			int    convert_Decimal []=binary_to_decimal(ssd);  //CONVERTIMOS EL BINARIO A DECIMAL   
+			int [] validationPar=count(convert_Decimal);
+			System.out.println(Arrays.toString(validationPar)+" 82");
+			parTwo =isPar(validationPar);
+			*/
+			//VERIFICAR SI EL MENSAJE ES CORRECTO
+			if(validationMessage(parOne, parTwo)) {
+				in.txt[4].setText("Mensaje recibido con éxito : " + message);
+			}
+			else {
+				in.txt[4].setText("Erro detectado : " );
 			}
 		}
-			for (int c = 0; c < txt1.length; c++) {
-				if(e.getSource()==txt1[c]) {
-					String extract_tx [] = extract(txt1);
-					String destin [] = delete_Parity(extract_tx);
-					decimal22 =binary_to_decimal(destin);
-					int    count22 []=count(decimal22);
-					show_Message(count22);
-				
-				}
-			}
 	}
 	
 	
-	public void show_Message(int [] count_r) {
-		if(validation(count,count_r)) {
-			in.mensajeFinal.setForeground(Color.BLACK);
-			in.mensajeFinal.setText("Mensaje recibido correctamente : " + convert_to_String(decimal22));
-		}
-		else {
-			in.mensajeFinal.setForeground(Color.RED);
-			in.mensajeFinal.setText("Error al recibir mensaje : "+ convert_to_String(decimal22));	
-		}
+	public void updateData() {
+		
 	}
+	
+	public String deleteCorchet(String str) {
+		return str.substring(1,str.length()-1);
+	}
+	
+	
+	public void prueba() {
+		/*String bb [] =letters_to_binary("hello");
+		System.out.println(Arrays.toString(bb));
+		
+		int [] b=binary_to_decimal(bb);
+		System.out.println(Arrays.toString(b));
+		
+		int [] ba=count(b);
+		int [] c= isPar(ba);
+		System.out.println("par  " +Arrays.toString(c));
+		
+		String with_parity []= addParity(c,bb);
+		System.out.println(Arrays.toString(with_parity));
+		
+		int [] asd= countStringInBinary(with_parity);
+		System.out.println("erg"+Arrays.toString(asd));
+		
+		//delete_Parity(with_parity);
+		//System.out.println(Arrays.toString(delete_Parity(with_parity)));
+	
+		System.out.println("converso: "+ convert_to_String(b));*/
+		     
+	}
+	
+	public int [] countStringInBinary(String a[]) {
+		int [] one = new int[a.length];
+		
+		for (int i = 0; i < a.length; i++) {
+			int size = a[i].length();
+			
+			for (int j = 0; j < size; j++) {
+				if(a[i].charAt(j)=='1') {
+					one[i]=one[i]+1;
+				}	
+			}
+		}
+		return one;
+	}
+	
 	public String convert_to_String(int [] numbers) {
 		String word= "";
 		for (int c = 0; c < numbers.length; c++) {
@@ -81,10 +164,6 @@ public class Controller_interface implements KeyListener {
 		return word;
 	}
 	
-	public boolean validation(int [] count, int [] count2) {
-		boolean flag = Arrays.equals(count, count2);
-		return flag;
-	}
 	
 	public String array_to_cadena(String [] a) {
 		String text = "";
@@ -101,15 +180,6 @@ public class Controller_interface implements KeyListener {
 	}
 	
 	
-	public void prueba() {
-		String a [] =letters_to_binary("hello");
-		int [] b=binary_to_decimal(a);
-		int [] c=count(b);
-		String with_parity []= addParity(c,a);
-		delete_Parity(with_parity);
-		System.out.println("converso: "+ convert_to_String(b));
-	}
-	
 	public String [] letters_to_binary(String word) {
 		size = word.length();
 		char[] lettres= word.toCharArray();
@@ -121,12 +191,15 @@ public class Controller_interface implements KeyListener {
 	return binary;
 	}
 	
+	
 	public int[] count(int [] binary) {
 		int parity[]= new int[binary.length];
 		for (int c = 0; c < parity.length; c++) 
 			parity[c] =Integer.bitCount(binary[c]);
 	return parity;
 	}
+	
+
 	
 	
 	public int [] binary_to_decimal(String [] binary) {
@@ -142,38 +215,40 @@ public class Controller_interface implements KeyListener {
 	
 	public String [] addParity(int [] count, String [] binary) {
 		String [] binary_with_parity = new String[binary.length];
+		
 		for (int c = 0; c < count.length; c++) {
-			if(count[c]%2==0)	binary_with_parity[c] = binary[c] + "0";
-			else 				binary_with_parity[c] = binary[c] + "1";
-		}		
+			if(count[c]==0){	
+				binary_with_parity[c] = binary[c] + "0";
+			}
+			else{
+				binary_with_parity[c] = binary[c] + "1";
+			}
+		}
 	return binary_with_parity;
-	}	
+	}
 	
 	
-	public String [] delete_Parity(String [] binary) {
+	public int [] isPar(int [] count) {
+		int v [] = new int[count.length];
+		for (int c = 0; c < count.length; c++) {
+			if(count[c]%2==0){	
+				v[c]= 0;
+			}
+			else{
+				v[c]= 1;
+			}	
+		}
+		return v;
+	}
+	
+	public String [] delete_Parity(String concat) {
+		String [] binary= concat.split(",");
 		String binary_without_parity [] = new String[binary.length]; 
 		for (int c = 0; c < binary.length; c++)
 			binary_without_parity[c] = binary[c].substring(0, binary[c].length()-1);
 	return binary_without_parity;
 	}
 	
-
-	public void addCeldas(String [] data) {
-		int length = data.length;
-		txt1 = new JTextField[length];
-		in.panel_paridad.removeAll();
-		in.panel_paridad.repaint();
-		for (int c = 0; c < length; c++) {
-			txt1[c] = new JTextField(data[c]);
-			txt1[c].setFont(new Font("Cambria", Font.PLAIN, 14));
-			txt1[c].setBounds(c*75+3, 1, 80, 28);
-			txt1[c].setHorizontalAlignment(SwingConstants.CENTER);
-			txt1[c].setBorder(new LineBorder(Color.WHITE));
-			txt1[c].addKeyListener(this);
-			in.panel_paridad.add(txt1[c]);
-		}
-		in.panel_paridad.repaint();	
-	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {

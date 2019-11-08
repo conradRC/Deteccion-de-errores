@@ -9,7 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
-import Contoller.Controller_interface;
+
+import Contoller.Controller;
 import javax.swing.JScrollPane;
 
 public class Interface extends JPanel {
@@ -71,15 +72,15 @@ public class Interface extends JPanel {
 			js1[c].setBorder(new LineBorder(new Color(130, 135, 144), 0));
 		}
 	}
-	public void conect_controller(Controller_interface control) {
-		for (int c = 0; c < txt.length-2; c++)
-			txt[c].addKeyListener(control);
+	public void conect_controller(Controller control) {
+			txt[0].addKeyListener(control);
+			txt[2].addKeyListener(control);
 	}
 	
 	public static void main(String [] args) {
 		JFrame ventana = new JFrame();
 		Interface interf= new Interface();
-		Controller_interface control= new Controller_interface(interf);
+		Controller control= new Controller(interf);
 		interf.conect_controller(control);
 		ventana.setSize(1100,550);
 		ventana.setDefaultCloseOperation(3);

@@ -66,7 +66,7 @@ public class Controller_interface implements KeyListener {
 			in.txt[4].setText("Mensaje recibido con éxito : " + message); //AGREGAMOS EL MENSAJE EN EL CAMPO "MENSAJE"
 		}
 		//EN ESTA PARTE VERFICAMOS SI SE MODIFICA EL CAMPO DE PARIDAD
-		if(e.getSource()==in.txt[2]){		//ESCUCHA SI SE MODIFICA EL CAMPO DE "PARIDAD" (ENTRA CADA VEZ QUE SE MODIFICA EL CAMPO)
+		/*if(e.getSource()==in.txt[2]){		//ESCUCHA SI SE MODIFICA EL CAMPO DE "PARIDAD" (ENTRA CADA VEZ QUE SE MODIFICA EL CAMPO)
 			String cadena = in.txt[2].getText();	//OBTIENE LA CADENA DEL CAMPO (YA QUE SE MODIFICÓ ALGO)
 			String destino =deleteCorchet(cadena);//SE BORRAN LOS CORCHETES
 			System.out.println();
@@ -75,36 +75,29 @@ public class Controller_interface implements KeyListener {
 			String [] delete_Parity = delete_Parity(cadena);
 			in.txt[3].setText(deleteCorchet(Arrays.toString(delete_Parity)));
 			
-			String a = in.txt[3].getText();
-			String b = deleteCorchet(cadena);
-			String []c = b.split(",");
-			int counstr []= countStringInBinary(c);
-			parTwo = isPar(counstr);
-			//int    decim []=binary_to_decimal(c);  //CONVERTIMOS EL BINARIO A DECIMAL
-			//CONTAR NUEVOS BITS DE UNOS
 			
 			String [] convertToArray = cadena.split(", ");
 			int    decimal []=binary_to_decimal(convertToArray);  //CONVERTIMOS EL BINARIO A DECIMAL
 			int []countNewMenssage =count(decimal);						  //CON EL DECIMAL CONTAMOS LOS UNOS (1)
 			in.eti[2].setText(deleteCorchet(Arrays.toString(countNewMenssage)));
-		
+			
+			
+			String a = in.txt[3].getText();
+			String b = deleteCorchet(cadena);
+			String []c = b.split(",");
+			int counstr []= countStringInBinary(c);
+			parTwo = isPar(counstr);
 			
 			
 			
-			/*String []ssd= in.txt[3].getText().split(", ");
-			int    convert_Decimal []=binary_to_decimal(ssd);  //CONVERTIMOS EL BINARIO A DECIMAL   
-			int [] validationPar=count(convert_Decimal);
-			System.out.println(Arrays.toString(validationPar)+" 82");
-			parTwo =isPar(validationPar);
-			*/
 			//VERIFICAR SI EL MENSAJE ES CORRECTO
 			if(validationMessage(parOne, parTwo)) {
 				in.txt[4].setText("Mensaje recibido con éxito : " + message);
 			}
 			else {
-				in.txt[4].setText("Erro detectado : " );
+				in.txt[4].setText("Error detectado : " );
 			}
-		}
+		}*/
 	}
 	
 	

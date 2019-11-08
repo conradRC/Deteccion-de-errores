@@ -48,44 +48,61 @@ public class Controller implements KeyListener {
 			in.txt[3].setText(array_to_cadena(delete_Parity));
 			in.eti[2].setText(Arrays.toString(countTwo));	
 			
+			String destino = in.txt[3].getText();
+			int b [] = binary_to_decimal(format(destino));
+			System.out.println(Arrays.toString(b));
+			
 			if(validationMessage(countOne, countTwo)) {
-				in.txt[4].setText("Mensaje recibido con éxito : " + message);
+				in.txt[4].setText("Mensaje recibido con éxito : " + convert_to_String(b));
 			}
 			else {
-				in.txt[4].setText("Error detectado : " );
+				in.txt[4].setText("Error detectado" );
 			}
 		}
 	}
 	
 	
 	public boolean validationMessage(int [] parOne,int [] parTwo) {
-		
 		int parA[] = isPar(parOne);
 		int parB[] = isPar(parTwo);
 		boolean isValido = Arrays.equals(parA, parB);
-		System.out.println(Arrays.toString(parA) +" : "+ Arrays.toString(parB));
-		/*for (int i = 0; i < parOne.length; i++) {
-			if(parOne[i]==parTwo[i]){
-				isValido=true;
-			}
-			else{
-				isValido=false;
-				break;
-			}
-		}*/
 		return isValido;
 	}
 	
+	
+	public String convert_to_String(int [] numbers) {
+		String word= "";
+		for (int c = 0; c < numbers.length; c++) {
+			word = word+Character.toString((char) numbers[c]);
+		} 
+		return word;
+	}
+	
+	public int [] binary_to_decimal(String [] binary) {
+		Long aux_numberDecimal[] = new Long[binary.length];
+		int numberDecimal [] = new int[binary.length];
+		for (int c = 0; c < binary.length; c++) {
+			aux_numberDecimal[c]= Long.parseLong(binary[c],2);
+			numberDecimal[c]= aux_numberDecimal[c].intValue();
+		}
+	return numberDecimal;
+	}
 
 	public String [] delete_Parity(String concat) {
-		String n1= concat.trim();
-		String n = n1.replaceAll("\\s", ",");
-		String [] binary= n.split(",,,");	
+		String [] binary= format(concat);
 		String binary_without_parity [] = new String[binary.length]; 
 		for (int c = 0; c < binary.length; c++)
 			binary_without_parity[c] = binary[c].substring(0, binary[c].length()-1);
 		return binary_without_parity;
 	}
+	
+	public String [] format(String concat) {
+		String n1= concat.trim();
+		String n = n1.replaceAll("\\s", ",");
+		String [] binary= n.split(",,,");
+		return binary;
+	}
+	
 	
 	public int [] count(String [] binary) {
 		Long aux_numberDecimal[] = new Long[binary.length];
@@ -109,6 +126,14 @@ public class Controller implements KeyListener {
 		}
 	return binary;
 	}
+	
+	public int[] count(int [] binary) {
+		int parity[]= new int[binary.length];
+		for (int c = 0; c < parity.length; c++) 
+			parity[c] =Integer.bitCount(binary[c]);
+	return parity;
+	}
+	
 	
 	public String array_to_cadena(String [] a) {
 		String text = "";

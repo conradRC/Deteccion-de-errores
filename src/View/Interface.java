@@ -24,6 +24,7 @@ public class Interface extends JPanel {
 		setBackground(Color.WHITE);
 		setLayout(null);
 		
+		
 		String [] etiquetas = {"Mensaje :","Mensaje en binario :", "Paridad :", "Destino :","Mensaje recibido: "};
 		JScrollPane js[]= new JScrollPane[etiquetas.length];
 		JScrollPane js1[]= new JScrollPane[etiquetas.length-2];
